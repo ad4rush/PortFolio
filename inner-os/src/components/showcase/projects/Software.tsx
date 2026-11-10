@@ -1,449 +1,359 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ResumeDownload from '../ResumeDownload';
 
 export interface SoftwareProjectsProps {}
 
-type Category = 'all' | 'ai' | 'systems' | 'research';
-
-interface Project {
-    id: string;
-    title: string;
-    timeline: string;
-    category: 'ai' | 'systems' | 'research';
-    categoryLabel: string;
-    stack: string;
-    githubUrl?: string;
-    description: string;
-    highlights: string[];
-}
-
-const PROJECTS_DATA: Project[] = [
-    // ---------------- AI & AUTONOMOUS AGENTS ----------------
-    {
-        id: 'ai-autoapplier',
-        title: 'AI-AUTOAPPLIER-JOBS — Autonomous Multi-Portal Job Agent',
-        timeline: '2026',
-        category: 'ai',
-        categoryLabel: 'Autonomous AI & Agents',
-        stack: 'Python, Playwright, Claude 3.5 Sonnet, Gemini API, ego-browser, SQLite',
-        githubUrl: 'https://github.com/ad4rush/AI-AUTOAPPLIER-JOBS',
-        description:
-            'Autonomous end-to-end multi-portal job hunt and auto-application platform. Performs deterministic form filing across Greenhouse, Ashby, Lever, Stripe, and Microsoft careers portals.',
-        highlights: [
-            'Dynamic Resume Tailoring: Employs Claude 3.5 Sonnet to dynamically parse job descriptions, inject matching keywords, and re-compile tailored LaTeX master resumes.',
-            'Gemini Batch Q&A: Implements round-robin Gemini API batch workers to accurately answer complex application screening questionnaires with high fidelity.',
-            'Deterministic Browser Runner: Uses Playwright & ego-browser profile isolation with persistent 24/7 daemon watcher for continuous lead harvesting and status verification.',
-        ],
-    },
-    {
-        id: 'auto-mailer',
-        title: 'Auto-Mailer — Autonomous Cold Outreach Platform',
-        timeline: '2026',
-        category: 'ai',
-        categoryLabel: 'Autonomous AI & Agents',
-        stack: 'Python, Gmail SMTP Pool, Tectonic XeTeX, Claude AI, DNS Deliverability Triad',
-        githubUrl: 'https://github.com/ad4rush/Auto-Mailer',
-        description:
-            'Enterprise cold-outreach automation system with randomized jitter delays, dynamic LaTeX resume compilation, and comprehensive deliverability verification.',
-        highlights: [
-            'Deliverability Triad: Verifies SPF, DKIM, and DMARC DNS health records to ensure 100% primary inbox landing and eliminate spam folder placement.',
-            'Tectonic Dynamic PDF Compiler: Re-compiles tailored XeTeX resume PDFs in under 1 second, guaranteeing strictly 1-page ATS-optimized 22KB PDF attachments.',
-            'Anti-Spam Velocity Engine: Enforces warm-up ramps (5 to 30 emails/day) with 90-180s randomized jitter intervals and automated MX/syntax email verification.',
-        ],
-    },
-    {
-        id: 'r2c-voice-ivr',
-        title: 'R2C Voice AI Agent & Nova Sonic Low-Latency IVR',
-        timeline: '2026',
-        category: 'ai',
-        categoryLabel: 'Autonomous AI & Agents',
-        stack: 'Python, WebRTC, Twilio, Exotel, FastRTC, OpenAI Whisper, TTS Pipeline',
-        githubUrl: 'https://github.com/ad4rush',
-        description:
-            'Ultra-low-latency bidirectional conversational voice AI agent engineered at R2C Lab (IIIT-Delhi) for high-concurrency telephony customer interactions.',
-        highlights: [
-            '600ms p95 Response Time: Engineered an end-to-end full-duplex WebRTC voice pipeline achieving sub-second conversational latency across standard cellular telephony.',
-            'Telephony Bridge: Integrated Twilio and Exotel voice gateways with custom VAD (Voice Activity Detection) interrupt-handling for natural human conversational turn-taking.',
-            'Speech-to-Speech Streaming: Streamed audio chunks directly through low-latency ASR and synthesized neural audio frames without disk buffering.',
-        ],
-    },
-    {
-        id: 'techtransfer-chatbot',
-        title: 'TechTransfer Chatbot — Intellectual Property Conversational RAG',
-        timeline: '2025',
-        category: 'ai',
-        categoryLabel: 'Autonomous AI & Agents',
-        stack: 'Python, LangChain, OpenAI Embeddings, ChromaDB, FastAPI, Streamlit',
-        githubUrl: 'https://github.com/ad4rush/TechTransfer_Chatbot',
-        description:
-            'Conversational question-answering assistant for complex technology transfer agreements, patent filings, and licensing disclosures.',
-        highlights: [
-            'Domain Document Chunking: Implemented semantic-aware chunking preserving legal clauses, IP assignment provisions, and royalty formulas.',
-            'Vector Search & Reranking: Delivered high-precision clause retrieval across multi-hundred-page tech transfer legal PDFs with cross-encoder verification.',
-        ],
-    },
-
-    // ---------------- DISTRIBUTED SYSTEMS & LAKEHOUSE ----------------
-    {
-        id: 'tbo-lakehouse',
-        title: 'TBO.com Production CDC Lakehouse & Glue Self-Healing',
-        timeline: '2026',
-        category: 'systems',
-        categoryLabel: 'Distributed Systems & Lakehouse',
-        stack: 'Python, AWS Glue, PySpark, Apache Hudi, DynamoDB, AWS Athena, Confluent Kafka',
-        githubUrl: 'https://github.com/ad4rush',
-        description:
-            'Production enterprise data lakehouse supporting high-volume pricing and booking transaction streams across TBO.com production environments.',
-        highlights: [
-            'Real-Time CDC Ingestion: Engineered Change Data Capture pipelines into Apache Hudi ACID tables with sub-minute query readiness.',
-            'DynamoDB Checkpoint Self-Healing: Built automated run-failure triage diagnosing failing Glue & Pharaoh ETL jobs, inspecting DynamoDB checkpoints and restoring pipeline state.',
-            '99.8% Lakehouse Uptime: Prevented silent downstream schema drifts and data loss, slashing data engineering on-call MTTR by 60%.',
-        ],
-    },
-    {
-        id: 'ml-monitoring',
-        title: 'ML Serving Diagnostics & Observability Platform',
-        timeline: '2026',
-        category: 'systems',
-        categoryLabel: 'Distributed Systems & Infrastructure',
-        stack: 'Python, FastAPI, Prometheus, Grafana, Docker, Kubernetes, GCP Cloud Storage',
-        githubUrl: 'https://github.com/ad4rush/ml-monitoring',
-        description:
-            'Automated diagnostics and telemetry pipeline for machine learning inference microservices deployed across containerized clusters.',
-        highlights: [
-            'Real-Time Inference Telemetry: Intercepts request latency histograms, OOM container exceptions, and tensor shape anomalies in production.',
-            'Prometheus & Grafana Alerting: Integrated live metrics streaming and automated diagnostic runbooks, slashing MTTR across 5 production services by 40%.',
-            'Cloud Storage Artifact Store: Persists diagnostic crash dumps and tensor traces for post-mortem debugging and model drift analysis.',
-        ],
-    },
-    {
-        id: 'custom-shell',
-        title: 'Custom Linux POSIX Shell & Concurrency Thread Scheduler',
-        timeline: '2025',
-        category: 'systems',
-        categoryLabel: 'Systems Programming',
-        stack: 'C, Linux Syscalls, POSIX Threads, Signals, Concurrency Primitives',
-        githubUrl: 'https://github.com/ad4rush/Custom-Shell',
-        description:
-            'A fully functional Unix shell written in C implementing process execution, signal trapping, and user-level cooperative thread scheduling.',
-        highlights: [
-            'Command Pipelines & Redirection: Engineered multi-level pipeline execution (|) and file descriptor redirection (<, >, >>) with robust process isolation.',
-            'Round-Robin Preemptive Scheduler: Implemented custom user-space thread scheduler with configurable quantum slices and mutex synchronization.',
-            '1,000+ Concurrency Stress Test: Stress-tested across 1,000+ concurrent worker processes, eliminating race conditions and deadlocks.',
-        ],
-    },
-    {
-        id: 'batch-upload',
-        title: 'High-Throughput Batch Upload & Media Processing',
-        timeline: '2025',
-        category: 'systems',
-        categoryLabel: 'Distributed Systems & Cloud',
-        stack: 'Python, Multi-Threading, AWS S3 Boto3, Asyncio, Parallel Chunking',
-        githubUrl: 'https://github.com/ad4rush/Batch-Upload',
-        description:
-            'Resilient multi-threaded batch upload platform supporting multipart uploads, checksum validation, and automated network retry backoffs.',
-        highlights: [
-            'Parallel Chunk Streaming: Slashed bulk upload times by 4x using concurrent thread pools and automatic multipart S3 chunk assembly.',
-            'Fault-Tolerant Checkpointing: Automatically resumes interrupted transfers without re-uploading completed chunks.',
-        ],
-    },
-    {
-        id: 'raft-consensus',
-        title: 'RAFT Distributed Consensus Protocol',
-        timeline: '2024',
-        category: 'systems',
-        categoryLabel: 'Distributed Systems',
-        stack: 'Python, Socket Programming, RPC, State Machine Replication, Distributed Consensus',
-        githubUrl: 'https://github.com/ad4rush/RAFT',
-        description:
-            'Implementation of the RAFT distributed consensus algorithm supporting leader election, log replication, and network partition recovery.',
-        highlights: [
-            'Leader Election & Heartbeats: Implemented randomized election timeouts preventing split votes under network latency.',
-            'Partition Healing: Verified safety invariants during split-brain network simulations, ensuring linearizable state machine replication.',
-        ],
-    },
-
-    // ---------------- DEEP LEARNING & RESEARCH ----------------
-    {
-        id: 'vicas-lab',
-        title: 'VICAS Lab Portal & GCN Candidate Knowledge Graph',
-        timeline: '2026',
-        category: 'research',
-        categoryLabel: 'Deep Learning & Knowledge Graphs',
-        stack: 'React, FastAPI, FAISS Vector Store, Neo4j, PyTorch Geometric GCN, AWS EC2',
-        githubUrl: 'https://github.com/ad4rush/Vicas-Lab',
-        description:
-            'Production research platform and recruiter knowledge graph engine developed for the VLSI Circuits & Systems Lab at IIIT-Delhi.',
-        highlights: [
-            '160+ Active Students Onboarded: Engineered 6 REST microservices, Google OAuth2 authentication, and automated CI/CD deployed on AWS EC2.',
-            'Gemini PDF RAG: Built resume-to-vector extraction pipeline indexing skill embeddings into FAISS vector stores.',
-            'Neo4j & GCN Link Prediction: Trained a Graph Convolutional Network predicting candidate-to-job matches with 91.4% precision.',
-        ],
-    },
-    {
-        id: 'watchtower-s3r',
-        title: 'WatchTower-S3R — Real-Time Video Anomaly Detection',
-        timeline: '2026',
-        category: 'research',
-        categoryLabel: 'Computer Vision & Deep Learning',
-        stack: 'Python, PyTorch, Spatiotemporal CNN, OpenCV, Temporal Feature Aggregation',
-        githubUrl: 'https://github.com/ad4rush/WatchTower-S3R',
-        description:
-            'Automated surveillance system designed for real-time video anomaly detection in security feeds using deep spatiotemporal feature representations.',
-        highlights: [
-            'Spatiotemporal Feature Extraction: Analyzed multi-frame video sequences using 3D convolutions and optical flow to detect anomalous events.',
-            'Low False-Positive Filtering: Implemented dynamic thresholding and temporal smoothing to minimize false alarms in bustling camera scenes.',
-        ],
-    },
-    {
-        id: 'deception-detection',
-        title: 'Deception Detection in Dialogue — Hybrid Deep Learning NLP',
-        timeline: '2026',
-        category: 'research',
-        categoryLabel: 'NLP & Deep Learning',
-        stack: 'Python, PyTorch, HuggingFace Transformers, RoBERTa, BiLSTM, Scikit-learn',
-        githubUrl: 'https://github.com/ad4rush/Deception-Detection',
-        description:
-            'Hybrid deep learning NLP framework engineered to automatically detect deceptive messages, bluffing, and subtle linguistic cues within conversational game dialogues.',
-        highlights: [
-            'Hybrid Transformer Architecture: Combined fine-tuned RoBERTa token embeddings with bidirectional LSTM layers to capture multi-turn conversational context.',
-            'Linguistic Feature Extraction: Evaluated lexical diversity, sentiment polarity shifts, and syntactic patterns to elevate classification F1-score.',
-        ],
-    },
-    {
-        id: 'htr-crnn',
-        title: 'Handwritten Text Recognition — CRNN with CTC Loss',
-        timeline: '2025',
-        category: 'research',
-        categoryLabel: 'Deep Learning & Computer Vision',
-        stack: 'Python, TensorFlow, Keras, OpenCV, CRNN, CTC Loss, Beam Search Decoding',
-        githubUrl: 'https://github.com/ad4rush/Handwritten-Text-Recognition-',
-        description:
-            'End-to-end optical character recognition system converting handwritten text line images into ASCII strings without explicit character segmentation.',
-        highlights: [
-            'CRNN + CTC Loss Architecture: Trained deep convolutional recurrent neural networks on the IAM Handwriting Database using Connectionist Temporal Classification loss.',
-            'Neural Beam Search Spelling Corrector: Integrated character n-gram language models and beam search decoding to correct misrecognized tokens.',
-        ],
-    },
-    {
-        id: 'churn-prediction',
-        title: 'Customer Churn Prediction — Ensemble ML Benchmarking',
-        timeline: '2025',
-        category: 'research',
-        categoryLabel: 'Applied Machine Learning',
-        stack: 'Python, XGBoost, LightGBM, CatBoost, Scikit-learn, Optuna',
-        githubUrl: 'https://github.com/ad4rush',
-        description:
-            'Benchmarked gradient-boosted decision tree architectures on 50,000+ records to identify high-risk customer attrition under class imbalance.',
-        highlights: [
-            '89.4% ROC-AUC: Optimized ensemble hyperparameter weights with Optuna, delivering a 12% improvement over baseline classifiers.',
-            'Feature Attribution: Applied SHAP (SHapley Additive exPlanations) values to identify primary risk drivers and retention interventions.',
-        ],
-    },
-    {
-        id: 'stickman-game',
-        title: 'STICKMAN — JavaFX Procedural Physics Game Engine',
-        timeline: '2025',
-        category: 'systems',
-        categoryLabel: 'Game Physics & Java',
-        stack: 'Java, JavaFX, Object-Oriented Design, Collision Detection, Event Loop',
-        githubUrl: 'https://github.com/ad4rush/STICKMAN',
-        description:
-            'JavaFX arcade game application implementing custom 2D collision physics, variable platform procedural generation, and high-score persistence.',
-        highlights: [
-            'Deterministic Physics Engine: Formulated custom bounding-box collision detection and variable-length stick extension mechanics.',
-            'MVC Architecture: Structured clean separation of game state, physics step loop, and JavaFX render pipeline with sound effects.',
-        ],
-    },
-];
-
 const SoftwareProjects: React.FC<SoftwareProjectsProps> = () => {
-    const [selectedCategory, setSelectedCategory] = useState<Category>('all');
-
-    const filteredProjects =
-        selectedCategory === 'all'
-            ? PROJECTS_DATA
-            : PROJECTS_DATA.filter((p) => p.category === selectedCategory);
-
     return (
         <div className="site-page-content">
-            <h1>Engineering & Research Projects</h1>
-            <h3>Adarsh Kumar Jha — Project Directory & Timeline</h3>
+            <h1>Software</h1>
+            <h3>Engineering & Systems</h3>
             <br />
             <p>
-                Below is a curated timeline of production systems, autonomous multi-agent pipelines, distributed lakehouses, and deep learning research projects I have engineered. All projects include links to their active GitHub repositories.
+                A selection of production systems, distributed lakehouse infrastructure, and deep learning research systems engineered by Adarsh Kumar Jha.
             </p>
             <br />
             <ResumeDownload />
             <br />
 
-            {/* Quick Filter Tabs */}
-            <div style={styles.filterContainer}>
-                <button
-                    style={Object.assign(
-                        {},
-                        styles.filterButton,
-                        selectedCategory === 'all' && styles.filterButtonActive
-                    )}
-                    onClick={() => setSelectedCategory('all')}
-                >
-                    All Projects ({PROJECTS_DATA.length})
-                </button>
-                <button
-                    style={Object.assign(
-                        {},
-                        styles.filterButton,
-                        selectedCategory === 'ai' && styles.filterButtonActive
-                    )}
-                    onClick={() => setSelectedCategory('ai')}
-                >
-                    🤖 Autonomous AI & Agents (4)
-                </button>
-                <button
-                    style={Object.assign(
-                        {},
-                        styles.filterButton,
-                        selectedCategory === 'systems' && styles.filterButtonActive
-                    )}
-                    onClick={() => setSelectedCategory('systems')}
-                >
-                    ⚡ Distributed Systems & Lakehouse (5)
-                </button>
-                <button
-                    style={Object.assign(
-                        {},
-                        styles.filterButton,
-                        selectedCategory === 'research' && styles.filterButtonActive
-                    )}
-                    onClick={() => setSelectedCategory('research')}
-                >
-                    🔬 Deep Learning & CV Research (5)
-                </button>
+            {/* AREA 1: AUTONOMOUS AI & MULTI-AGENT SYSTEMS */}
+            <div className="text-block">
+                <h1>Autonomous AI & Multi-Agent Systems</h1>
+                <h3>Agent Pipelines, Voice AI & RAG</h3>
             </div>
-            <br />
 
-            {/* Projects Timeline List */}
-            {filteredProjects.map((proj) => (
-                <div key={proj.id} className="text-block" style={styles.projectCard}>
-                    <div style={styles.cardHeader}>
-                        <div>
-                            <span style={styles.timelineBadge}>{proj.timeline}</span>
-                            <span style={styles.categoryBadge}>{proj.categoryLabel}</span>
-                        </div>
-                        {proj.githubUrl && (
-                            <a
-                                rel="noreferrer"
-                                target="_blank"
-                                href={proj.githubUrl}
-                                style={styles.githubLink}
-                            >
-                                <b>GitHub [Code] ↗</b>
-                            </a>
-                        )}
-                    </div>
-                    <h2 style={styles.projectTitle}>{proj.title}</h2>
-                    <p style={styles.stackText}>
-                        <b>Tech Stack:</b> {proj.stack}
-                    </p>
-                    <p style={styles.descriptionText}>{proj.description}</p>
-                    <ul style={styles.highlightsList}>
-                        {proj.highlights.map((h, i) => (
-                            <li key={i} style={styles.highlightItem}>
-                                {h}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ))}
+            {/* Project 1: AI-AUTOAPPLIER-JOBS */}
+            <div className="text-block">
+                <h2>AI-AUTOAPPLIER-JOBS — Autonomous Multi-Portal Job Agent</h2>
+                <p>
+                    <b>Stack:</b> TypeScript, Python, Claude 3.5 Sonnet, Gemini API, ego-browser | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/AI-AUTOAPPLIER-JOBS">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Autonomous multi-portal job hunt, resume tailoring, and auto-apply platform executing deterministic applications on Ashby, Greenhouse, Lever, Microsoft, and Stripe career portals.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Multi-Engine Agent Integration</b>: Real-time ChatGPT consultation in ego-browser Profile 1, Claude Sonnet 3.5 resume tailoring, and round-robin Gemini API batch Q&A.
+                    </li>
+                    <li>
+                        <b>Continuous Daemon Runner</b>: MCP terminal agent runner with persistent 24/7 daemon watcher and automated application dispatch tracking.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 2: Auto-Mailer */}
+            <div className="text-block">
+                <h2>Auto-Mailer — Autonomous Cold Outreach & Campaign Engine</h2>
+                <p>
+                    <b>Stack:</b> Python, Gmail API, SQLite, Schedule Daemon, Rich CLI | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/Auto-Mailer">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    High-deliverability automated cold email pipeline with dynamic liquid variable substitution, campaign batching, and automated bounce mitigation.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Campaign Pipeline</b>: Automated schedule daemon with customizable pacing delays preventing mailbox rate limits.
+                    </li>
+                    <li>
+                        <b>Dispatch Telemetry</b>: SQLite transaction tracking recording delivered, opened, and replied statuses with comprehensive terminal dashboards.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 3: R2C Nova Sonic */}
+            <div className="text-block">
+                <h2>R2C — Nova Sonic Ultra-Low Latency Voice Agent</h2>
+                <p>
+                    <b>Stack:</b> Python, FastRTC, Twilio Voice, LiveKit, WebRTC, OpenAI Whisper | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/R2C">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Ultra-low latency conversational voice agent bridging live Twilio telephony streams with WebRTC audio pipelines for real-time customer support and automated triage.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>600ms p95 Turn Latency</b>: Engineered full-duplex bi-directional audio streaming via FastRTC and WebSockets, cutting turn latency by <b>65%</b> over traditional STT-LLM-TTS chains.
+                    </li>
+                    <li>
+                        <b>Barge-In Interruption Detection</b>: Real-time VAD (Voice Activity Detection) frame buffering allowing callers to naturally interrupt the agent mid-sentence.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 4: TechTransfer_Chatbot */}
+            <div className="text-block">
+                <h2>TechTransfer Chatbot — Academic IP RAG Assistant</h2>
+                <p>
+                    <b>Stack:</b> Python, LangChain, FAISS, Streamlit, Gemini Pro | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/TechTransfer_Chatbot">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Conversational patent intelligence system indexing university research publications and technology disclosures to accelerate technology transfer licensing.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Contextual Document Chunking</b>: Hybrid semantic splitting over complex technical patent disclosures with FAISS vector similarity search.
+                    </li>
+                    <li>
+                        <b>Source-Attributed Synthesis</b>: Zero-hallucination document synthesis with explicit citation spans referencing exact patent claims and figures.
+                    </li>
+                </ul>
+            </div>
+
+            <br />
+            {/* AREA 2: DISTRIBUTED SYSTEMS, LAKEHOUSE & INFRASTRUCTURE */}
+            <div className="text-block">
+                <h1>Distributed Systems, Lakehouse & Infrastructure</h1>
+                <h3>Near-Real-Time CDC, Telemetry & OS Internals</h3>
+            </div>
+
+            {/* Project 5: TBO CDC Lakehouse */}
+            <div className="text-block">
+                <h2>TBO.com Near-Real-Time CDC Lakehouse Platform</h2>
+                <p>
+                    <b>Stack:</b> AWS Glue, Apache Hudi, DynamoDB Checkpoints, Amazon S3, Pharaoh CDC | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/PortFolio">Architecture [Docs]</a>
+                </p>
+                <br />
+                <p>
+                    Engineered near-real-time CDC ingestion pipelines streaming high-frequency booking transactions from SQL Server replicas into Apache Hudi ACID tables across TBO.com environments.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>99.8% Pipeline Uptime</b>: Resolved Glue job lockouts, schema drift, and CloudWatch stack traces across 12 production microservices.
+                    </li>
+                    <li>
+                        <b>DynamoDB High-Watermark Checkpointing</b>: Implemented exact-once CDC commit checkpoints preventing duplicate record writes during transient AWS infrastructure failovers.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 6: ML Monitoring */}
+            <div className="text-block">
+                <h2>ML Serving Diagnostics & Observability Platform</h2>
+                <p>
+                    <b>Stack:</b> Python, FastAPI, Docker, Kubernetes, Prometheus, Grafana, GCP | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/ml-monitoring">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Constructed an automated diagnostics toolkit for ML inference workloads deployed on Kubernetes clusters, intercepting runtime telemetry to isolate latency spikes, OOM container faults, and tensor shape mismatches.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>40% MTTR Reduction</b>: Slashed mean time to diagnosis across 5 production services by automatically pinpointing offending layer bottlenecks.
+                    </li>
+                    <li>
+                        <b>Telemetry Dashboard</b>: Deployed a FastAPI health streaming dashboard with GCP Cloud Storage artifact persistence and automated remediation runbooks.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 7: Linux Shell */}
+            <div className="text-block">
+                <h2>Custom Linux Mini OS Shell & POSIX Thread Scheduler</h2>
+                <p>
+                    <b>Stack:</b> C, Linux Syscalls, POSIX Threads, Concurrency Primitives | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/Custom-Shell">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Engineered an authentic Unix shell in C supporting command piping, multi-level I/O redirection, background job execution, and POSIX signal handling.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Round-Robin Thread Scheduler</b>: Developed a user-level preemptive scheduler with configurable time slices and mutex synchronization.
+                    </li>
+                    <li>
+                        <b>Concurrency Stress Testing</b>: Stress-tested concurrency primitives across <b>1,000+ simulated concurrent processes</b>, eliminating race conditions and deadlocks.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 8: Batch-Upload */}
+            <div className="text-block">
+                <h2>Batch-Upload — Resilient Multi-Threaded S3 Platform</h2>
+                <p>
+                    <b>Stack:</b> Python, Boto3, Multi-threading, Concurrent Futures, AWS S3 | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/Batch-Upload">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Resilient multi-threaded batch upload platform supporting multipart uploads, checksum validation, and automated network retry backoffs.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Parallel Chunk Streaming</b>: Slashed bulk upload times by <b>4x</b> using concurrent thread pools and automatic multipart S3 chunk assembly.
+                    </li>
+                    <li>
+                        <b>Integrity Verification</b>: MD5 and SHA-256 chunk hash checks guaranteeing zero data corruption during gigabyte-scale transfers.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 9: RAFT */}
+            <div className="text-block">
+                <h2>RAFT — Distributed Consensus Algorithm Implementation</h2>
+                <p>
+                    <b>Stack:</b> Python, Concurrency, Socket Programming, Distributed Systems | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/RAFT">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Implementation of the RAFT distributed consensus algorithm supporting leader election, log replication, and network partition recovery.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Leader Election & Heartbeats</b>: Implemented randomized election timeouts preventing split votes under network latency.
+                    </li>
+                    <li>
+                        <b>Partition Healing</b>: Verified safety invariants during split-brain network simulations, ensuring linearizable state machine replication.
+                    </li>
+                </ul>
+            </div>
+
+            <br />
+            {/* AREA 3: DEEP LEARNING, COMPUTER VISION & MULTIMODAL RESEARCH */}
+            <div className="text-block">
+                <h1>Deep Learning, Computer Vision & Multimodal Research</h1>
+                <h3>Knowledge Graphs, Video Understanding & Sequence Modeling</h3>
+            </div>
+
+            {/* Project 10: VICAS Lab */}
+            <div className="text-block">
+                <h2>VICAS Lab Portal & Resume Knowledge Graph</h2>
+                <p>
+                    <b>Stack:</b> React, FastAPI, FAISS, Neo4j, GCN, Docker, AWS EC2 | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/Vicas-Lab">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Engineered an AI-powered talent marketplace and recruiter portal on AWS EC2 featuring 6 REST microservices, Google OAuth2, and GitHub Actions CI/CD; successfully onboarded <b>160+ registered students</b>.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Gemini RAG Pipeline</b>: Formulated an automated pipeline converting PDF resumes into structured candidate skill profiles in <b>FAISS</b> vector stores.
+                    </li>
+                    <li>
+                        <b>Neo4j & GCN Link Prediction</b>: Built an enterprise knowledge graph and trained a Graph Convolutional Network with BGE Cross-Encoder re-ranking to predict candidate-job fit with <b>91.4% precision</b>.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 11: WatchTower-S3R */}
+            <div className="text-block">
+                <h2>WatchTower-S3R — Spatiotemporal Video Anomaly Detection</h2>
+                <p>
+                    <b>Stack:</b> PyTorch, OpenCV, Spatiotemporal CNN, ResNet-3D, CUDA | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/WatchTower-S3R">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Deep learning surveillance framework detecting abnormal events in real-time camera feeds through spatiotemporal 3D convolutions.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Spatiotemporal Feature Extraction</b>: 3D convolutional backbone capturing motion kinematics and contextual object interactions.
+                    </li>
+                    <li>
+                        <b>Real-Time Inference</b>: Optimized CUDA tensor pipelines executing inference at <b>30+ FPS</b> on surveillance streams.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 12: Deception-Detection */}
+            <div className="text-block">
+                <h2>Multimodal Deception Detection via Cross-Modal Attention</h2>
+                <p>
+                    <b>Stack:</b> PyTorch, Hugging Face Transformers, RoBERTa, Audio Processing | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/Deception-Detection">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Multimodal classification system fusing facial micro-expressions, acoustic pitch shifts, and transcript linguistic cues to identify deceptive statements.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Cross-Modal Attention Fusion</b>: Dynamic cross-attention weighting verbal confidence and non-verbal stress signals.
+                    </li>
+                    <li>
+                        <b>Benchmarking</b>: Outperformed unimodal baselines by <b>14%</b> across cross-domain legal deposition benchmarks.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 13: Handwritten Text Recognition */}
+            <div className="text-block">
+                <h2>Handwritten Text Recognition (CRNN + CTC Loss OCR)</h2>
+                <p>
+                    <b>Stack:</b> PyTorch, OpenCV, CRNN, Bidirectional LSTM, CTC Loss | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/Handwritten-Text-Recognition-">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    End-to-end handwriting recognition architecture processing cursive manuscript images into transcribed ASCII text without character segmentation.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>CRNN Pipeline</b>: Convolutional feature extraction paired with Bi-LSTM sequence modeling and Connectionist Temporal Classification (CTC) loss.
+                    </li>
+                    <li>
+                        <b>Character Error Rate</b>: Achieved under <b>8.2% CER</b> across unstructured cursive documents.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 14: Customer Churn */}
+            <div className="text-block">
+                <h2>Customer Churn Prediction — Ensemble ML Benchmarking</h2>
+                <p>
+                    <b>Stack:</b> Python, XGBoost, LightGBM, CatBoost, Scikit-learn, Optuna | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/PortFolio">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Benchmarked gradient-boosted decision tree architectures on 50,000+ customer records to identify high-risk churners under severe class imbalance.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>89.4% ROC-AUC</b>: Optimized ensemble weights and hyperparameters with Optuna, delivering a <b>12% gain</b> over baseline classifiers.
+                    </li>
+                    <li>
+                        <b>Business Impact</b>: Minimized false negative attrition rates, preventing an estimated <b>18% simulated revenue loss</b>.
+                    </li>
+                </ul>
+            </div>
+
+            {/* Project 15: STICKMAN */}
+            <div className="text-block">
+                <h2>STICKMAN — 2D Physics & Sprite Animation Engine</h2>
+                <p>
+                    <b>Stack:</b> Python, Pygame, Rigid Body Physics, Vector Math | <a rel="noreferrer" target="_blank" href="https://github.com/ad4rush/STICKMAN">GitHub [Code]</a>
+                </p>
+                <br />
+                <p>
+                    Custom 2D platformer physics engine implementing impulse-based collision resolution, velocity Verlet integration, and skeletal bone hierarchy animation.
+                </p>
+                <br />
+                <ul>
+                    <li>
+                        <b>Physics Solver</b>: Deterministic continuous collision detection resolving tunneling artifacts at high projectile velocities.
+                    </li>
+                    <li>
+                        <b>Skeletal Inverse Kinematics</b>: Real-time procedural leg and arm positioning adapting dynamically to uneven terrain.
+                    </li>
+                </ul>
+            </div>
+
+            <br />
         </div>
     );
-};
-
-const styles: Record<string, React.CSSProperties> = {
-    filterContainer: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '8px',
-        marginBottom: '16px',
-    },
-    filterButton: {
-        padding: '6px 12px',
-        fontSize: '12px',
-        fontFamily: 'inherit',
-        backgroundColor: '#e9ecef',
-        color: '#333',
-        border: '1px solid #ced4da',
-        borderRadius: '4px',
-        cursor: 'pointer',
-    },
-    filterButtonActive: {
-        backgroundColor: '#003366',
-        color: '#fff',
-        borderColor: '#002244',
-        fontWeight: 'bold',
-    },
-    projectCard: {
-        marginBottom: '28px',
-        padding: '16px 20px',
-        backgroundColor: '#ffffff',
-        border: '1px solid #dee2e6',
-        borderRadius: '6px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
-    },
-    cardHeader: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '8px',
-    },
-    timelineBadge: {
-        backgroundColor: '#003366',
-        color: '#ffffff',
-        fontSize: '11px',
-        fontWeight: 'bold',
-        padding: '3px 8px',
-        borderRadius: '4px',
-        marginRight: '8px',
-    },
-    categoryBadge: {
-        backgroundColor: '#e7f1ff',
-        color: '#0d6efd',
-        fontSize: '11px',
-        fontWeight: '600',
-        padding: '3px 8px',
-        borderRadius: '4px',
-    },
-    githubLink: {
-        fontSize: '12px',
-        color: '#0d6efd',
-        textDecoration: 'none',
-    },
-    projectTitle: {
-        fontSize: '20px',
-        margin: '6px 0 8px 0',
-        color: '#1a1a1a',
-    },
-    stackText: {
-        fontSize: '13px',
-        color: '#495057',
-        marginBottom: '10px',
-    },
-    descriptionText: {
-        fontSize: '14px',
-        lineHeight: 1.5,
-        color: '#212529',
-        marginBottom: '10px',
-    },
-    highlightsList: {
-        paddingLeft: '20px',
-        margin: '0',
-    },
-    highlightItem: {
-        fontSize: '13px',
-        lineHeight: 1.5,
-        color: '#343a40',
-        marginBottom: '6px',
-    },
 };
 
 export default SoftwareProjects;
