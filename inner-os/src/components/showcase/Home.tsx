@@ -52,6 +52,7 @@ const styles: Record<string, React.CSSProperties> = {
         right: 0,
         top: 0,
         position: 'absolute',
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
@@ -59,6 +60,9 @@ const styles: Record<string, React.CSSProperties> = {
         boxSizing: 'border-box',
     },
     header: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
         textAlign: 'center',
         marginBottom: 16,
     },
