@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../../constants/colors';
-import twitterIcon from '../../assets/pictures/contact-twitter.png';
 import ghIcon from '../../assets/pictures/contact-gh.png';
 import inIcon from '../../assets/pictures/contact-in.png';
 import ResumeDownload from './ResumeDownload';
@@ -36,7 +35,8 @@ const Contact: React.FC<ContactProps> = (props) => {
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [copied, setCopied] = useState(false);
     const [formMessage, setFormMessage] = useState('');
     const [formMessageColor, setFormMessageColor] = useState('');
 
@@ -48,9 +48,16 @@ const Contact: React.FC<ContactProps> = (props) => {
         }
     }, [email, name, message]);
 
+    const subjectStr = `Portfolio Message from ${name}${company ? ` (${company})` : ''}`;
+    const bodyText = `Hi Adarsh,\n\n${message}\n\n---\nBest regards,\n${name}\nEmail: ${email}${company ? `\nCompany: ${company}` : ''}`;
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=ad4rush@gmail.com&su=${encodeURIComponent(subjectStr)}&body=${encodeURIComponent(bodyText)}`;
+    const mailtoUrl = `mailto:ad4rush@gmail.com?subject=${encodeURIComponent(subjectStr)}&body=${encodeURIComponent(bodyText)}`;
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=918287993780&text=${encodeURIComponent(`Hi Adarsh, this is ${name}${company ? ` from ${company}` : ''}. ${message} (Email: ${email})`)}`;
+    const clipboardText = `To: ad4rush@gmail.com\nSubject: ${subjectStr}\n\n${bodyText}`;
+
     function submitForm() {
         if (!isFormValid) {
-            setFormMessage('Form unable to validate, please fill all required fields.');
+            setFormMessage('Please complete name, email, and message.');
             setFormMessageColor(colors.red);
             return;
         }
@@ -68,35 +75,41 @@ const Contact: React.FC<ContactProps> = (props) => {
             localStorage.setItem('portfolio_messages', JSON.stringify(stored));
         } catch (e) {}
 
-        const subject = encodeURIComponent(`Portfolio Message from ${name}${company ? ` (${company})` : ''}`);
-        const bodyText = `Hi Adarsh,\n\n${message}\n\nBest regards,\n${name}\nEmail: ${email}${company ? `\nCompany: ${company}` : ''}`;
-        const body = encodeURIComponent(bodyText);
-        const mailtoUrl = `mailto:ad4rush@gmail.com?subject=${subject}&body=${body}`;
-
-        // Safely launch mailto without navigating iframe
+        // Copy formatted message to clipboard automatically
         try {
-            window.open(mailtoUrl, '_blank');
+            if (navigator && navigator.clipboard) {
+                navigator.clipboard.writeText(clipboardText);
+            }
         } catch (e) {}
 
-        setFormMessage(
-            `Message dispatched! Thank you ${name}, your message has been sent to ad4rush@gmail.com.`
-        );
+        // Trigger Gmail compose directly
+        try {
+            window.open(gmailUrl, '_blank');
+        } catch (e) {}
+
+        setIsSubmitted(true);
+        setFormMessage('Message prepared and queued!');
         setFormMessageColor(colors.blue);
+    }
+
+    const copyToClipboard = () => {
+        try {
+            if (navigator && navigator.clipboard) {
+                navigator.clipboard.writeText(clipboardText);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2500);
+            }
+        } catch (e) {}
+    };
+
+    const handleReset = () => {
+        setIsSubmitted(false);
         setCompany('');
         setEmail('');
         setName('');
         setMessage('');
-        setIsLoading(false);
-    }
-
-    useEffect(() => {
-        if (formMessage.length > 0) {
-            setTimeout(() => {
-                setFormMessage('');
-                setFormMessageColor('');
-            }, 4000);
-        }
-    }, [formMessage]);
+        setFormMessage('');
+    };
 
     return (
         <div className="site-page-content">
@@ -132,114 +145,166 @@ const Contact: React.FC<ContactProps> = (props) => {
                     </a>
                 </p>
 
-                <div style={styles.form}>
-                    <label>
-                        <p>
-                            {!name && <span style={styles.star}>*</span>}
-                            <b>Your name:</b>
-                        </p>
-                    </label>
-                    <input
-                        style={styles.formItem}
-                        type="text"
-                        name="name"
-                        placeholder="Name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <label>
-                        <p>
-                            {!validateEmail(email) && (
-                                <span style={styles.star}>*</span>
-                            )}
-                            <b>Email:</b>
-                        </p>
-                    </label>
-                    <input
-                        style={styles.formItem}
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <label>
-                        <p>
-                            <b>Company (optional):</b>
-                        </p>
-                    </label>
-                    <input
-                        style={styles.formItem}
-                        type="company"
-                        name="company"
-                        placeholder="Company"
-                        value={company}
-                        onChange={(e) => setCompany(e.target.value)}
-                    />
-                    <label>
-                        <p>
-                            {!message && <span style={styles.star}>*</span>}
-                            <b>Message:</b>
-                        </p>
-                    </label>
-                    <textarea
-                        name="message"
-                        placeholder="Message"
-                        style={styles.formItem}
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <div style={styles.buttons}>
-                        <button
-                            className="site-button"
-                            style={styles.button}
-                            type="button"
-                            disabled={!isFormValid || isLoading}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                submitForm();
-                            }}
-                            onMouseDown={(e) => {
-                                e.preventDefault();
-                                submitForm();
-                            }}
-                        >
-                            {!isLoading ? (
-                                'Send Message'
-                            ) : (
-                                <p className="loading">Sending...</p>
-                            )}
-                        </button>
-                        <div style={styles.formInfo}>
-                            <p
-                                style={Object.assign(
-                                    {},
-                                    { color: formMessageColor }
-                                )}
-                            >
-                                <b>
-                                    <sub>
-                                        {formMessage
-                                            ? `${formMessage}`
-                                            : ' All messages get forwarded straight to my personal email'}
-                                    </sub>
-                                </b>
-                            </p>
-                            <p>
-                                <sub>
-                                    {!isFormValid ? (
-                                        <span>
-                                            <b style={styles.star}>*</b> =
-                                            required
-                                        </span>
-                                    ) : (
-                                        '\xa0'
-                                    )}
-                                </sub>
+                {isSubmitted ? (
+                    <div style={styles.confirmationBox}>
+                        <div style={styles.confirmationHeader}>
+                            <h3 style={{ margin: 0, color: '#166534' }}>
+                                ✓ Message Prepared for Transmission!
+                            </h3>
+                            <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#374151' }}>
+                                A formatted copy has been placed on your clipboard. Choose how you'd like to deliver it:
                             </p>
                         </div>
+
+                        <div style={styles.summaryBox}>
+                            <p style={{ margin: '2px 0' }}><b>To:</b> ad4rush@gmail.com</p>
+                            <p style={{ margin: '2px 0' }}><b>From:</b> {name} ({email}){company ? ` at ${company}` : ''}</p>
+                            <p style={{ margin: '6px 0 2px' }}><b>Message:</b></p>
+                            <pre style={styles.summaryPre}>{message}</pre>
+                        </div>
+
+                        <div style={styles.dispatchActions}>
+                            <a
+                                href={gmailUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="site-button"
+                                style={styles.actionButton}
+                            >
+                                ✉ Open in Gmail (Send Immediately)
+                            </a>
+                            <a
+                                href={mailtoUrl}
+                                className="site-button"
+                                style={styles.actionButton}
+                            >
+                                📧 Open in Default Mail App
+                            </a>
+                            <a
+                                href={whatsappUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="site-button"
+                                style={styles.actionButton}
+                            >
+                                💬 Send via WhatsApp (+91-8287993780)
+                            </a>
+                            <button
+                                type="button"
+                                className="site-button"
+                                style={styles.actionButton}
+                                onClick={copyToClipboard}
+                            >
+                                📋 {copied ? '✓ Copied to Clipboard!' : 'Copy Formatted Text'}
+                            </button>
+                            <button
+                                type="button"
+                                className="site-button"
+                                style={{ ...styles.actionButton, backgroundColor: '#f1f5f9', marginTop: 10 }}
+                                onClick={handleReset}
+                            >
+                                ↺ Write Another Message
+                            </button>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div style={styles.form}>
+                        <label>
+                            <p>
+                                {!name && <span style={styles.star}>*</span>}
+                                <b>Your name:</b>
+                            </p>
+                        </label>
+                        <input
+                            style={styles.formItem}
+                            type="text"
+                            name="name"
+                            placeholder="Name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                        <label>
+                            <p>
+                                {!validateEmail(email) && (
+                                    <span style={styles.star}>*</span>
+                                )}
+                                <b>Email:</b>
+                            </p>
+                        </label>
+                        <input
+                            style={styles.formItem}
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <label>
+                            <p>
+                                <b>Company (optional):</b>
+                            </p>
+                        </label>
+                        <input
+                            style={styles.formItem}
+                            type="text"
+                            name="company"
+                            placeholder="Company"
+                            value={company}
+                            onChange={(e) => setCompany(e.target.value)}
+                        />
+                        <label>
+                            <p>
+                                {!message && <span style={styles.star}>*</span>}
+                                <b>Message:</b>
+                            </p>
+                        </label>
+                        <textarea
+                            name="message"
+                            placeholder="Message"
+                            style={styles.formItem}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+                        <div style={styles.buttons}>
+                            <button
+                                className="site-button"
+                                style={styles.button}
+                                type="button"
+                                disabled={!isFormValid}
+                                onClick={submitForm}
+                            >
+                                Send Message
+                            </button>
+                            <div style={styles.formInfo}>
+                                <p
+                                    style={Object.assign(
+                                        {},
+                                        { color: formMessageColor }
+                                    )}
+                                >
+                                    <b>
+                                        <sub>
+                                            {formMessage
+                                                ? `${formMessage}`
+                                                : ' Messages are routed directly to ad4rush@gmail.com'}
+                                        </sub>
+                                    </b>
+                                </p>
+                                <p>
+                                    <sub>
+                                        {!isFormValid ? (
+                                            <span>
+                                                <b style={styles.star}>*</b> = required
+                                            </span>
+                                        ) : (
+                                            '\xa0'
+                                        )}
+                                    </sub>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
             <ResumeDownload altText="Need a copy of my Resume?" />
         </div>
@@ -249,7 +314,7 @@ const Contact: React.FC<ContactProps> = (props) => {
 const styles: StyleSheetCSS = {
     form: {
         flexDirection: 'column',
-        marginTop: 32,
+        marginTop: 24,
     },
     formItem: {
         marginTop: 4,
@@ -265,7 +330,6 @@ const styles: StyleSheetCSS = {
     },
     formInfo: {
         textAlign: 'right',
-
         flexDirection: 'column',
         alignItems: 'flex-end',
         paddingLeft: 24,
@@ -276,7 +340,7 @@ const styles: StyleSheetCSS = {
     },
     button: {
         minWidth: 184,
-        height: 32,
+        height: 34,
     },
     header: {
         alignItems: 'flex-end',
@@ -289,11 +353,57 @@ const styles: StyleSheetCSS = {
     social: {
         width: 4,
         height: 4,
-        // borderRadius: 1000,
-
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 8,
+    },
+    confirmationBox: {
+        flexDirection: 'column',
+        marginTop: 20,
+        padding: 16,
+        backgroundColor: '#f0fdf4',
+        border: '2px solid #86efac',
+        borderRadius: 8,
+    },
+    confirmationHeader: {
+        flexDirection: 'column',
+        marginBottom: 12,
+    },
+    summaryBox: {
+        flexDirection: 'column',
+        padding: 10,
+        backgroundColor: '#ffffff',
+        border: '1px solid #bbf7d0',
+        borderRadius: 6,
+        marginBottom: 16,
+        fontSize: '12px',
+        color: '#1f2937',
+    },
+    summaryPre: {
+        margin: '4px 0 0',
+        padding: 8,
+        backgroundColor: '#f8fafc',
+        borderRadius: 4,
+        fontSize: '12px',
+        whiteSpace: 'pre-wrap',
+        fontFamily: 'monospace',
+        border: '1px solid #e2e8f0',
+    },
+    dispatchActions: {
+        flexDirection: 'column',
+        gap: 8,
+    },
+    actionButton: {
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '8px 14px',
+        textDecoration: 'none',
+        color: '#000000',
+        fontWeight: 600,
+        fontSize: '13px',
+        cursor: 'pointer',
+        textAlign: 'center',
     },
 };
 

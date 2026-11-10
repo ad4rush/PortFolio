@@ -8,37 +8,33 @@ export interface CreditsProps extends WindowAppProps {}
 const CREDITS = [
     {
         title: 'Candidate & Portfolio',
-        rows: [['Adarsh Kumar Jha', 'Engineering, Projects & Content']],
+        rows: [['Adarsh Kumar Jha', 'Full Stack AI Engineer & Author']],
     },
     {
-        title: 'Original 3D Concept & Scene',
-        rows: [['Henry Heffernan', '3D Room, Composition & OS Concept']],
+        title: 'Interactive 3D Experience',
+        rows: [
+            ['Adarsh Kumar Jha', '3D Scene, Retro OS & WebGL Pipeline'],
+            ['Mickael Boitte', 'CRT Monitor & Computer Model'],
+            ['Sean Nicolas', 'Desk & Environment Models'],
+        ],
     },
     {
         title: 'Vector Signature Animation',
-        rows: [['Maxime Heckel', 'Signature Stroke & SVG Concept']],
+        rows: [['Adarsh Kumar Jha', 'Handwritten Signature & Dynamic Reveal Mask']],
     },
     {
-        title: 'Modeling & Texturing',
+        title: 'Sound Design & Foley',
         rows: [
-            ['Henry Heffernan', 'Texturing, Composition, & UV'],
-            ['Mickael Boitte', 'Computer Model'],
-            ['Sean Nicolas', 'Environment Models'],
+            ['Adarsh Kumar Jha', 'Audio Integration & Composition'],
+            ['Sound Cassette', 'Retro Room Ambience'],
+            ['Microsoft', 'Classic System Audio'],
         ],
     },
     {
-        title: 'Sound Design',
+        title: 'Engineering & Projects',
         rows: [
-            ['Henry Heffernan', 'Mixing, Composition, & Foley'],
-            ['Sound Cassette', 'Office Ambience'],
-            ['Windows 95 Startup Sound', 'Microsoft'],
-        ],
-    },
-    {
-        title: 'Inspiration',
-        rows: [
-            ['Henry Heffernan', '3D Retro OS Workspace'],
-            ['Maxime Heckel', 'Animated Vector Signature'],
+            ['Adarsh Kumar Jha', 'Autonomous AI Applier, R2C, Data Lakehouse'],
+            ['IIIT Delhi & TBO.com', 'Machine Learning & CDC Infrastructure'],
         ],
     },
 ];
