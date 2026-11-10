@@ -1,0 +1,11 @@
+{
+  "name": "adarsh-portfolio",
+  "version": "1.0.0",
+  "description": "Adarsh Kumar Jha - 3D Retro OS Portfolio (Henry Heffernan + Maxime Heckel Hybrid)",
+  "scripts": {
+    "build:os": "cd inner-os && npm run build",
+    "build:room": "cd 3d-room && npm run build",
+    "build": "npm run build:os && npm run build:room",
+    "preview": "python3 -m http.server 8080 --directory 3d-room/public"
+  }
+}
