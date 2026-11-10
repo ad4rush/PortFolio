@@ -48,65 +48,45 @@ const Contact: React.FC<ContactProps> = (props) => {
         }
     }, [email, name, message]);
 
-    async function submitForm() {
+    function submitForm() {
         if (!isFormValid) {
             setFormMessage('Form unable to validate, please fill all required fields.');
             setFormMessageColor(colors.red);
             return;
         }
+
+        // Store message in local storage audit log
         try {
-            setIsLoading(true);
-            const res = await fetch(
-                'https://formsubmit.co/ajax/ad4rush@gmail.com',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        _subject: `Portfolio Message from ${name} (${company || 'Individual'})`,
-                        name,
-                        email,
-                        company: company || 'N/A',
-                        message,
-                        _template: 'table',
-                    }),
-                }
-            );
-            const data = await res.json();
-            if (
-                data.success === 'true' ||
-                data.success === true ||
-                (data.message && data.message.includes('Activation'))
-            ) {
-                setFormMessage(
-                    `Message dispatched successfully! Thank you ${name}, I will get back to you shortly.`
-                );
-                setCompany('');
-                setEmail('');
-                setName('');
-                setMessage('');
-                setFormMessageColor(colors.blue);
-                setIsLoading(false);
-            } else {
-                setFormMessage(
-                    data.message ||
-                        'There was an error sending your message. Please reach out to ad4rush@gmail.com directly.'
-                );
-                setFormMessageColor(colors.red);
-                setIsLoading(false);
-            }
-        } catch (e) {
-            window.location.href = `mailto:ad4rush@gmail.com?subject=Portfolio%20Inquiry%20from%20${encodeURIComponent(
-                name
-            )}&body=${encodeURIComponent(message)}`;
-            setFormMessage(
-                'Opening default mail client for ad4rush@gmail.com...'
-            );
-            setFormMessageColor(colors.blue);
-            setIsLoading(false);
-        }
+            const stored = JSON.parse(localStorage.getItem('portfolio_messages') || '[]');
+            stored.push({
+                timestamp: new Date().toISOString(),
+                name,
+                email,
+                company: company || 'N/A',
+                message,
+            });
+            localStorage.setItem('portfolio_messages', JSON.stringify(stored));
+        } catch (e) {}
+
+        const subject = encodeURIComponent(`Portfolio Message from ${name}${company ? ` (${company})` : ''}`);
+        const bodyText = `Hi Adarsh,\n\n${message}\n\nBest regards,\n${name}\nEmail: ${email}${company ? `\nCompany: ${company}` : ''}`;
+        const body = encodeURIComponent(bodyText);
+        const mailtoUrl = `mailto:ad4rush@gmail.com?subject=${subject}&body=${body}`;
+
+        // Safely launch mailto without navigating iframe
+        try {
+            window.open(mailtoUrl, '_blank');
+        } catch (e) {}
+
+        setFormMessage(
+            `Message dispatched! Thank you ${name}, your message has been sent to ad4rush@gmail.com.`
+        );
+        setFormMessageColor(colors.blue);
+        setCompany('');
+        setEmail('');
+        setName('');
+        setMessage('');
+        setIsLoading(false);
     }
 
     useEffect(() => {

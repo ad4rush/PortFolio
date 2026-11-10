@@ -13,7 +13,7 @@ const ResumeDownload: React.FC<ResumeDownloadProps> = ({ altText }) => {
             <div style={styles.resumeContainerText}>
                 <h3>{altText ? altText : 'Looking for my resume?'}</h3>
                 <a rel="noreferrer" target="_blank" href={Resume} download="Adarsh_Kumar_Jha_AI_Engineer_Resume.pdf">
-                    <p>Click here to print & download it! (ATS Optimized PDF, 22KB)</p>
+                    <p>Click here to view & download it!</p>
                 </a>
             </div>
         </div>

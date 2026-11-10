@@ -187,7 +187,7 @@ export default class MonitorScreen extends EventEmitter {
         if (urlParams.has('dev')) {
             iframe.src = 'http://localhost:3000/';
         } else {
-            iframe.src = './os/index.html';
+            iframe.src = './os/index.html?t=' + Date.now();
         }
         iframe.style.width = this.screenSize.width + 'px';
         iframe.style.height = this.screenSize.height + 'px';

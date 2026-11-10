@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import signatureImg from '../../assets/pictures/signature.png';
 
 export interface SignatureProps {
     color?: string;
@@ -10,7 +9,7 @@ export interface SignatureProps {
 }
 
 export const Signature: React.FC<SignatureProps> = ({
-    color = '#0f172a',
+    color = '#002b49',
     width = 320,
     height = 138,
     subtitle = 'Handwritten Signature — Adarsh Kumar Jha',
@@ -22,16 +21,13 @@ export const Signature: React.FC<SignatureProps> = ({
         setKey((prev) => prev + 1);
     };
 
-    // Mask ID unique per key to force SVG mask re-evaluation in all browsers
-    const maskId = `signature-reveal-mask-${key}`;
-
     return (
-        <div 
+        <div
             style={{
                 ...styles.container,
-                borderColor: isHovered ? '#3b82f6' : '#cbd5e1',
-                boxShadow: isHovered 
-                    ? '0 6px 20px rgba(59, 130, 246, 0.15)' 
+                borderColor: isHovered ? '#2563eb' : '#cbd5e1',
+                boxShadow: isHovered
+                    ? '0 6px 20px rgba(37, 99, 235, 0.15)'
                     : '0 2px 8px rgba(0, 0, 0, 0.04)',
             }}
             onMouseEnter={() => setIsHovered(true)}
@@ -50,196 +46,126 @@ export const Signature: React.FC<SignatureProps> = ({
                     style={styles.svg}
                 >
                     <defs>
-                        {/* Progressive dynamic reveal mask tracing Adarsh's authentic strokes */}
-                        <mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="0" width="360" height="156">
-                            {/* Black background hides unrevealed areas */}
-                            <rect width="360" height="156" fill="black" />
-
-                            {/* Stroke 1: Leftward sweep crossbar loop */}
-                            <motion.path
-                                d="M 125 36 C 85 36, 44 55, 44 75 C 44 95, 75 94, 125 62"
-                                stroke="white"
-                                strokeWidth="32"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ duration: 0.65, ease: [0.45, 0, 0.55, 1] }}
-                            />
-
-                            {/* Stroke 2: Rising stem of 'A' up to the top apex */}
-                            <motion.path
-                                d="M 125 108 C 135 80, 150 40, 165 7"
-                                stroke="white"
-                                strokeWidth="32"
-                                strokeLinecap="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ duration: 0.5, delay: 0.55, ease: [0.25, 1, 0.5, 1] }}
-                            />
-
-                            {/* Stroke 3: Descending slash of 'A' */}
-                            <motion.path
-                                d="M 165 7 C 158 35, 146 70, 132 102"
-                                stroke="white"
-                                strokeWidth="32"
-                                strokeLinecap="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ duration: 0.4, delay: 1.0, ease: [0.33, 1, 0.68, 1] }}
-                            />
-
-                            {/* Stroke 4: Upper arching flourish across top */}
-                            <motion.path
-                                d="M 132 102 C 145 40, 195 24, 250 36 C 275 42, 288 36, 288 30"
-                                stroke="white"
-                                strokeWidth="32"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ duration: 0.65, delay: 1.35, ease: [0.42, 0, 0.58, 1] }}
-                            />
-
-                            {/* Stroke 5: Fluid cursive letters 'darsh' */}
-                            <motion.path
-                                d="M 132 55 C 150 58, 165 65, 178 78 C 190 60, 202 52, 214 83 C 224 82, 235 60, 248 65 C 260 76, 275 60, 292 66 C 304 68, 312 70, 316 72"
-                                stroke="white"
-                                strokeWidth="32"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ duration: 1.0, delay: 1.95, ease: [0.45, 0, 0.55, 1] }}
-                            />
-
-                            {/* Stroke 6: Trailing underline flourish */}
-                            <motion.path
-                                d="M 44 96 C 90 92, 130 65, 155 95 C 160 116, 210 110, 270 85"
-                                stroke="white"
-                                strokeWidth="30"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                fill="none"
-                                initial={{ pathLength: 0 }}
-                                animate={{ pathLength: 1 }}
-                                transition={{ duration: 0.55, delay: 2.9, ease: [0.22, 1, 0.36, 1] }}
-                            />
-
-                            {/* Stroke 7: First punctuation dot */}
-                            <motion.circle
-                                cx="198"
-                                cy="121"
-                                r="12"
-                                fill="white"
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ duration: 0.15, delay: 3.45, ease: 'easeOut' }}
-                            />
-
-                            {/* Stroke 8: Second punctuation dot */}
-                            <motion.circle
-                                cx="212"
-                                cy="120"
-                                r="12"
-                                fill="white"
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ duration: 0.15, delay: 3.65, ease: 'easeOut' }}
-                            />
-                        </mask>
-
-                        {/* Subtle blue/indigo ambient glow gradient */}
-                        <linearGradient id="signature-glow-gradient" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stopColor="#2563eb" stopOpacity="0.8" />
-                            <stop offset="50%" stopColor="#4f46e5" stopOpacity="0.7" />
-                            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.8" />
+                        {/* Glowing ink gradient for signing pen accents */}
+                        <linearGradient id="ink-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#1e3a8a" />
+                            <stop offset="50%" stopColor="#0f172a" />
+                            <stop offset="100%" stopColor="#2563eb" />
                         </linearGradient>
+
+                        <filter id="ink-glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="0" dy="1" stdDeviation="1" floodColor="#1e3a8a" floodOpacity="0.3" />
+                        </filter>
                     </defs>
 
-                    {/* 1. Real authentic handwritten signature image revealed through animated strokes */}
-                    <image
-                        href={signatureImg}
-                        x="0"
-                        y="0"
-                        width="360"
-                        height="156"
-                        preserveAspectRatio="xMidYMid meet"
-                        mask={`url(#${maskId})`}
-                        style={{ filter: color !== '#0f172a' ? 'contrast(1.1)' : undefined }}
-                    />
-
-                    {/* 2. Maxime Heckel animated blue/indigo vector guide line (glowing ink stroke) */}
+                    {/* STROKE 1: Leftward sweep crossbar loop of 'A' */}
                     <motion.path
-                        d="M 125 36 C 85 36, 44 55, 44 75 C 44 95, 75 94, 125 62"
-                        stroke="url(#signature-glow-gradient)"
-                        strokeWidth="1.2"
+                        d="M 124 42 C 85 36, 44 54, 44 75 C 44 94, 76 92, 124 60"
+                        stroke={color}
+                        strokeWidth="4"
                         strokeLinecap="round"
+                        strokeLinejoin="round"
                         fill="none"
-                        initial={{ pathLength: 0, opacity: 0.9 }}
-                        animate={{ pathLength: 1, opacity: 0.15 }}
+                        filter="url(#ink-glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
                         transition={{ duration: 0.65, ease: [0.45, 0, 0.55, 1] }}
                     />
+
+                    {/* STROKE 2: Ascending stem of 'A' up to the apex */}
                     <motion.path
-                        d="M 125 108 C 135 80, 150 40, 165 7"
-                        stroke="url(#signature-glow-gradient)"
-                        strokeWidth="1.2"
+                        d="M 124 108 C 134 82, 150 42, 166 8"
+                        stroke={color}
+                        strokeWidth="4.2"
                         strokeLinecap="round"
                         fill="none"
-                        initial={{ pathLength: 0, opacity: 0.9 }}
-                        animate={{ pathLength: 1, opacity: 0.15 }}
+                        filter="url(#ink-glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.55, ease: [0.25, 1, 0.5, 1] }}
                     />
+
+                    {/* STROKE 3: Descending slash of 'A' */}
                     <motion.path
-                        d="M 165 7 C 158 35, 146 70, 132 102"
-                        stroke="url(#signature-glow-gradient)"
-                        strokeWidth="1.2"
+                        d="M 166 8 C 160 38, 146 72, 132 105"
+                        stroke={color}
+                        strokeWidth="4"
                         strokeLinecap="round"
                         fill="none"
-                        initial={{ pathLength: 0, opacity: 0.9 }}
-                        animate={{ pathLength: 1, opacity: 0.15 }}
+                        filter="url(#ink-glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
                         transition={{ duration: 0.4, delay: 1.0, ease: [0.33, 1, 0.68, 1] }}
                     />
+
+                    {/* STROKE 4: High arching flourish looping across the top */}
                     <motion.path
-                        d="M 132 102 C 145 40, 195 24, 250 36 C 275 42, 288 36, 288 30"
-                        stroke="url(#signature-glow-gradient)"
-                        strokeWidth="1.2"
+                        d="M 132 105 C 145 36, 195 24, 245 34 C 272 40, 286 34, 286 28"
+                        stroke={color}
+                        strokeWidth="3.8"
                         strokeLinecap="round"
+                        strokeLinejoin="round"
                         fill="none"
-                        initial={{ pathLength: 0, opacity: 0.9 }}
-                        animate={{ pathLength: 1, opacity: 0.15 }}
+                        filter="url(#ink-glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
                         transition={{ duration: 0.65, delay: 1.35, ease: [0.42, 0, 0.58, 1] }}
                     />
+
+                    {/* STROKE 5: Fluid cursive letters 'darsh' */}
                     <motion.path
-                        d="M 132 55 C 150 58, 165 65, 178 78 C 190 60, 202 52, 214 83 C 224 82, 235 60, 248 65 C 260 76, 275 60, 292 66 C 304 68, 312 70, 316 72"
-                        stroke="url(#signature-glow-gradient)"
-                        strokeWidth="1.2"
+                        d="M 132 58 C 148 56, 165 62, 176 76 C 186 60, 198 52, 212 80 C 220 78, 230 60, 242 62 C 254 72, 268 56, 280 60 C 292 65, 305 68, 316 72"
+                        stroke={color}
+                        strokeWidth="3.6"
                         strokeLinecap="round"
+                        strokeLinejoin="round"
                         fill="none"
-                        initial={{ pathLength: 0, opacity: 0.9 }}
-                        animate={{ pathLength: 1, opacity: 0.15 }}
-                        transition={{ duration: 1.0, delay: 1.95, ease: [0.45, 0, 0.55, 1] }}
+                        filter="url(#ink-glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 1.1, delay: 1.95, ease: [0.45, 0, 0.55, 1] }}
                     />
+
+                    {/* STROKE 6: Trailing horizontal underline flourish */}
                     <motion.path
-                        d="M 44 96 C 90 92, 130 65, 155 95 C 160 116, 210 110, 270 85"
-                        stroke="url(#signature-glow-gradient)"
-                        strokeWidth="1.2"
+                        d="M 44 96 C 90 92, 130 68, 155 96 C 160 116, 205 112, 265 85"
+                        stroke={color}
+                        strokeWidth="3.8"
                         strokeLinecap="round"
+                        strokeLinejoin="round"
                         fill="none"
-                        initial={{ pathLength: 0, opacity: 0.9 }}
-                        animate={{ pathLength: 1, opacity: 0.15 }}
-                        transition={{ duration: 0.55, delay: 2.9, ease: [0.22, 1, 0.36, 1] }}
+                        filter="url(#ink-glow)"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 0.55, delay: 3.0, ease: [0.22, 1, 0.36, 1] }}
+                    />
+
+                    {/* STROKE 7: First punctuation dot */}
+                    <motion.circle
+                        cx="198"
+                        cy="121"
+                        r="4"
+                        fill={color}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.2, delay: 3.55, ease: 'easeOut' }}
+                    />
+
+                    {/* STROKE 8: Second punctuation dot */}
+                    <motion.circle
+                        cx="212"
+                        cy="120"
+                        r="4"
+                        fill={color}
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.2, delay: 3.75, ease: 'easeOut' }}
                     />
                 </svg>
             </div>
             <div style={styles.footer}>
                 <span style={styles.replayBadge}>
-                    ↺ {isHovered ? 'Click to replay' : 'Replay animation'}
+                    ↺ {isHovered ? 'Click to replay' : 'Replay signing animation'}
                 </span>
                 {subtitle && <p style={styles.subtitle}>{subtitle}</p>}
             </div>
