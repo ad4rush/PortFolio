@@ -50,36 +50,39 @@ const Contact: React.FC<ContactProps> = (props) => {
 
     async function submitForm() {
         if (!isFormValid) {
-            setFormMessage('Form unable to validate, please try again.');
-            setFormMessageColor('red');
+            setFormMessage('Form unable to validate, please fill all required fields.');
+            setFormMessageColor(colors.red);
             return;
         }
         try {
             setIsLoading(true);
             const res = await fetch(
-                'https://api.henryheffernan.com/api/contact',
+                'https://formsubmit.co/ajax/ad4rush@gmail.com',
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                     },
                     body: JSON.stringify({
-                        company,
-                        email,
+                        _subject: `Portfolio Message from ${name} (${company || 'Individual'})`,
                         name,
+                        email,
+                        company: company || 'N/A',
                         message,
+                        _template: 'table',
                     }),
                 }
             );
-            // the response will be either {success: true} or {success: false, error: message}
-            const data = (await res.json()) as
-                | {
-                      success: false;
-                      error: string;
-                  }
-                | { success: true };
-            if (data.success) {
-                setFormMessage(`Message successfully sent. Thank you ${name}!`);
+            const data = await res.json();
+            if (
+                data.success === 'true' ||
+                data.success === true ||
+                (data.message && data.message.includes('Activation'))
+            ) {
+                setFormMessage(
+                    `Message dispatched successfully! Thank you ${name}, I will get back to you shortly.`
+                );
                 setCompany('');
                 setEmail('');
                 setName('');
@@ -87,15 +90,21 @@ const Contact: React.FC<ContactProps> = (props) => {
                 setFormMessageColor(colors.blue);
                 setIsLoading(false);
             } else {
-                setFormMessage(data.error);
+                setFormMessage(
+                    data.message ||
+                        'There was an error sending your message. Please reach out to ad4rush@gmail.com directly.'
+                );
                 setFormMessageColor(colors.red);
                 setIsLoading(false);
             }
         } catch (e) {
+            window.location.href = `mailto:ad4rush@gmail.com?subject=Portfolio%20Inquiry%20from%20${encodeURIComponent(
+                name
+            )}&body=${encodeURIComponent(message)}`;
             setFormMessage(
-                'There was an error sending your message. Please try again.'
+                'Opening default mail client for ad4rush@gmail.com...'
             );
-            setFormMessageColor(colors.red);
+            setFormMessageColor(colors.blue);
             setIsLoading(false);
         }
     }
@@ -204,14 +213,21 @@ const Contact: React.FC<ContactProps> = (props) => {
                         <button
                             className="site-button"
                             style={styles.button}
-                            type="submit"
+                            type="button"
                             disabled={!isFormValid || isLoading}
-                            onMouseDown={submitForm}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                submitForm();
+                            }}
+                            onMouseDown={(e) => {
+                                e.preventDefault();
+                                submitForm();
+                            }}
                         >
                             {!isLoading ? (
                                 'Send Message'
                             ) : (
-                                <p className="loading">Sending</p>
+                                <p className="loading">Sending...</p>
                             )}
                         </button>
                         <div style={styles.formInfo}>

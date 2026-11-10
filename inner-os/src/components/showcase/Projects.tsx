@@ -1,110 +1,95 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import software from '../../assets/pictures/projects/software.gif';
-import art from '../../assets/pictures/projects/art.gif';
-import music from '../../assets/pictures/projects/music.gif';
 
 export interface ProjectsProps {}
 
-interface ProjectBoxProps {
+interface ProjectTrackCardProps {
     icon: string;
     title: string;
     subtitle: string;
-    route: string;
-    iconStyle: React.CSSProperties;
+    description: string;
+    stats: string;
+    onClick: () => void;
 }
 
-const ProjectBox: React.FC<ProjectBoxProps> = ({
+const ProjectTrackCard: React.FC<ProjectTrackCardProps> = ({
     icon,
     title,
     subtitle,
-    route,
-    iconStyle,
+    description,
+    stats,
+    onClick,
 }) => {
-    const [, setIsHovering] = useState(false);
-    const navigation = useNavigate();
-
-    const handleClick = () => {
-        navigation(`/projects/${route}`);
-    };
-
-    const onMouseEnter = () => {
-        setIsHovering(true);
-    };
-
-    const onMouseLeave = () => {
-        setIsHovering(false);
-    };
-
     return (
         <div
-            onMouseDown={handleClick}
+            onMouseDown={onClick}
             className="big-button-container"
             style={styles.projectLink}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
         >
             <div style={styles.projectLinkLeft}>
                 <img
                     src={icon}
-                    style={Object.assign(
-                        {},
-                        styles.projectLinkImage,
-                        iconStyle
-                    )}
+                    style={styles.computerIcon}
                     alt=""
                 />
                 <div style={styles.projectText}>
-                    <h1 style={{ fontSize: 48 }}>{title}</h1>
-                    <h3>{subtitle}</h3>
+                    <h1 style={{ fontSize: 36, margin: '0 0 4px 0' }}>{title}</h1>
+                    <h3 style={{ fontSize: 14, color: '#003366', margin: '0 0 8px 0' }}>{subtitle}</h3>
+                    <p style={{ fontSize: 13, color: '#495057', margin: '0 0 6px 0' }}>{description}</p>
+                    <p style={{ fontSize: 11, fontFamily: 'monospace', color: '#6c757d' }}><b>Key Highlights:</b> {stats}</p>
                 </div>
             </div>
-            <div style={styles.projectLinkRight}></div>
+            <div style={styles.projectLinkRight}>
+                <p style={{ fontSize: 18, color: '#003366' }}><b>➔</b></p>
+            </div>
         </div>
     );
 };
 
-const Projects: React.FC<ProjectsProps> = (props) => {
+const Projects: React.FC<ProjectsProps> = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="site-page-content">
-            <h1>Projects</h1>
-            <h3>& Hobbies</h3>
+            <h1>Engineering Projects</h1>
+            <h3>Production Systems & Research Directory</h3>
             <br />
             <p>
-                Click on one of the areas below to check out some of my favorite
-                projects I've done in that field. I spent a lot of time to
-                include a lot of visuals and interactive media to showcase each
-                project. Enjoy!
+                A collection of autonomous multi-agent pipelines, distributed lakehouse architectures, and deep learning research systems engineered by Adarsh Kumar Jha. Click any track below or explore the full interactive project timeline.
             </p>
             <br />
             <div style={styles.projectLinksContainer}>
-                <ProjectBox
+                <ProjectTrackCard
                     icon={software}
-                    iconStyle={styles.computerIcon}
-                    title="Software"
-                    subtitle="PROJECTS"
-                    route="software"
+                    title="Autonomous AI & Multi-Agent Systems"
+                    subtitle="4 PROJECTS — 2025/2026"
+                    description="Autonomous multi-portal job applications, dynamic LaTeX ATS tailoring, ultra-low latency voice IVR, and document RAG."
+                    stats="Greenhouse, Ashby, Lever, Claude 3.5 Sonnet, Gemini API, FastRTC, Twilio, WebRTC (600ms p95)"
+                    onClick={() => navigate('/projects/software')}
                 />
-                <ProjectBox
-                    icon={music}
-                    iconStyle={styles.musicIcon}
-                    title="Music"
-                    subtitle="VENTURES"
-                    route="music"
+                <ProjectTrackCard
+                    icon={software}
+                    title="Distributed Systems, Lakehouse & Infrastructure"
+                    subtitle="5 PROJECTS — 2024–2026"
+                    description="Real-time CDC pipelines, Apache Hudi ACID tables, Glue run-failure self-healing, ML inference observability, and Unix systems programming."
+                    stats="AWS Glue, Apache Hudi, DynamoDB Checkpoints, Prometheus, Grafana, POSIX C Threads, RAFT Consensus"
+                    onClick={() => navigate('/projects/software')}
                 />
-                <ProjectBox
-                    icon={art}
-                    iconStyle={styles.artIcon}
-                    title="Art"
-                    subtitle="ENDEAVORS"
-                    route="art"
+                <ProjectTrackCard
+                    icon={software}
+                    title="Deep Learning, Computer Vision & Multimodal Research"
+                    subtitle="5 PROJECTS — 2024–2026"
+                    description="Neo4j & GCN candidate knowledge graphs, spatiotemporal video anomaly detection, CRNN handwriting OCR, and dialogue deception detection."
+                    stats="Neo4j, PyTorch Geometric, Spatiotemporal CNN, CRNN + CTC Loss, RoBERTa, Optuna (89.4% ROC-AUC)"
+                    onClick={() => navigate('/projects/software')}
                 />
             </div>
         </div>
     );
 };
 
-const styles: StyleSheetCSS = {
+const styles: Record<string, React.CSSProperties> = {
     projectLinksContainer: {
         flexDirection: 'column',
         width: '100%',
@@ -112,42 +97,36 @@ const styles: StyleSheetCSS = {
         flex: 1,
     },
     projectLink: {
-        marginBottom: 24,
+        marginBottom: 20,
         cursor: 'pointer',
         width: '100%',
         boxSizing: 'border-box',
-
-        alignItems: 'center',
+        display: 'flex',
         justifyContent: 'space-between',
-    },
-    projectText: {
-        justifyContent: 'center',
-        flexDirection: 'column',
-    },
-    projectLinkImage: {
-        width: 48,
-        // height: 48,
-        marginRight: 38,
+        alignItems: 'center',
+        padding: '16px 20px',
+        backgroundColor: '#ffffff',
+        border: '2px solid #000000',
+        borderRadius: '6px',
+        boxShadow: '3px 3px 0px rgba(0,0,0,0.8)',
     },
     projectLinkLeft: {
-        marginLeft: 16,
+        display: 'flex',
         alignItems: 'center',
+        flex: 1,
+    },
+    projectLinkRight: {
+        marginLeft: 16,
     },
     computerIcon: {
         width: 56,
         height: 56,
+        marginRight: 20,
     },
-    musicIcon: {
-        width: 48,
-        height: 48,
-    },
-    arrowIcon: {
-        width: 48,
-        height: 48,
-    },
-    artIcon: {
-        width: 21 * 2,
-        height: 37 * 2,
+    projectText: {
+        display: 'flex',
+        flexDirection: 'column',
+        flex: 1,
     },
 };
 
