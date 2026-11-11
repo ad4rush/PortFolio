@@ -60,7 +60,7 @@ const About: React.FC<AboutProps> = () => {
 
             <div className="text-block">
                 <h3>Verified Signature</h3>
-                <Signature color="#003366" subtitle="Maxime Heckel Animated Vector Signature • Verified by Adarsh Kumar Jha" />
+                <Signature color="#003366" subtitle="Handwritten Signature • Adarsh Kumar Jha" />
             </div>
         </div>
     );

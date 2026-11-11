@@ -24,10 +24,11 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <div className="text-block">
                 <p>
                     Music has been a passion of mine for my whole life. When I
-                    was 15 years old, I downloaded FL Studio and started to
-                    produce my own music. I found a wonderful community on
-                    reddit called r/edmproduction and in 2016 created the now
-                    popular discord server EDM Production with over 14k members.
+                    was 15 years old in 2020, I downloaded FL Studio during
+                    lockdown and started producing my own tracks. I immersed
+                    myself in communities like r/edmproduction and producer
+                    Discord servers, learning sound design, synthesis, and
+                    mixing from the ground up.
                 </p>
                 <br />
                 <p>
@@ -48,8 +49,9 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <h2>Exploring house</h2>
             <br />
             <p>
-                In 2020 I went through a phase of really enjoying house. Some of
-                my favorite artists at the time were Malaa, Chirs Lake, Kyle
+                In 2022, around when I started university at IIIT-Delhi, I went
+                through a phase of really enjoying house and tech-house. Some of
+                my favorite artists at the time were Malaa, Chris Lake, Kyle
                 Walker and many more. Inspired, I decided to take a stab at
                 making some house tracks.
             </p>
@@ -85,13 +87,12 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
                 the composition and the trichotomy of the happy upbeat energy in
                 the intro and first drop, into the rich and euphoric bridge,
                 before delving into the darkness of the final build and drop. I
-                had an absolute blast making this back in the fall of 2020, and
-                every time I revisit it to tweak it just a little more, I have
-                so much fun.
+                had an absolute blast making this back in 2022, and every time I
+                revisit it to tweak it just a little more, I have so much fun.
             </p>
             <br />
             <p>
-                After making this track around fall 2020, my interest for house
+                After making this track around late 2022, my interest for house
                 overall was tapering off. Around this time I was starting to go
                 to the gym more consistently and ended up listening to a lot
                 more hard bass music, specifically drum & bass, mid tempo and of
@@ -101,18 +102,18 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <h2>Mid-Tempo?</h2>
             <br />
             <p>
-                Only about a month after taking a step away from house I started
-                working on a mid-tempo track which I called edge. I did a lot of
-                experimenting with this track, and to this day I'm very proud
-                with how it turned out. I never got around to finishing it up
-                and giving it a proper outro, but I'm still very happy with it's
+                A few months after taking a step away from house in 2023, I
+                started working on a mid-tempo track which I called Edge. I did a
+                lot of experimenting with this track, and to this day I'm very
+                proud of how it turned out. I never got around to finishing it up
+                and giving it a proper outro, but I'm still very happy with its
                 current state.
             </p>
             <br />
             <MusicPlayer
                 src={edge}
                 title="Edge [W.I.P.]"
-                subtitle="Adarsh Kumar Jha - 2021"
+                subtitle="Adarsh Kumar Jha - 2023"
                 currentSong={currentSong}
                 setCurrentSong={setCurrentSong}
             />
@@ -140,17 +141,17 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             </p>
             <br />
             <p>
-                The track below is a snip-it from a DnB track I started work on
-                back in 2019. I recently decided to pick it up again and work on
-                it more because I loved the idea, bassline and especially the
-                drums. Below is a short demo of the track including a small
-                buildup and drop.
+                The track below is a snippet from a DnB track I started work on
+                in 2024. Over 2025 and 2026, I decided to pick it up again to
+                rework the transient punch and mixdown because I loved the idea,
+                bassline, and rolling drums. Below is a short demo of the track
+                including a small buildup and drop.
             </p>
             <br />
             <MusicPlayer
                 src={dnb}
                 title="Break [Demo]"
-                subtitle="Adarsh Kumar Jha - 2019/2022"
+                subtitle="Adarsh Kumar Jha - 2024/2026"
                 currentSong={currentSong}
                 setCurrentSong={setCurrentSong}
             />
@@ -168,7 +169,7 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <MusicPlayer
                 src={dnbDrums}
                 title="Break [Drums and Sub]"
-                subtitle="Adarsh Kumar Jha - 2019/2022"
+                subtitle="Adarsh Kumar Jha - 2024/2026"
                 currentSong={currentSong}
                 setCurrentSong={setCurrentSong}
             />
@@ -208,11 +209,11 @@ const MusicProjects: React.FC<MusicProjectsProps> = (props) => {
             <p>
                 I am aware this section of my portfolio is rather short, but
                 it's because I am very selective with what I want to show off to
-                the world. I've been producing for over 6 years and have made
-                hundreds maybe even a thousand tracks/loops in that time. I only
-                recently have been feeling very content with the stuff I've made
-                and I'm very excited to see what I can do for the future. Thanks
-                for listening I hope you enjoyed!
+                the world. I've been producing for over 6 years (starting at age
+                15 in 2020) and have made hundreds of tracks, ideas, and loops in
+                that time. I only recently have been feeling very content with
+                the stuff I've made and I'm very excited to see what I can do for
+                the future. Thanks for listening, I hope you enjoyed!
             </p>
             <br />
         </div>
